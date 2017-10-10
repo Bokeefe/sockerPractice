@@ -26,7 +26,8 @@ app.post('/votePick', (req, res) => {
     var nsp = io.of('/');
     nsp.on('connection', function(socket){
       socket.join(voteName);
-      setTimeout(()=>{console.log(socket.rooms);},5000);
+      socket.emit();
+      setTimeout(()=>{console.log(socket.nsp.adapter.rooms);},5000);
     });
 
 
