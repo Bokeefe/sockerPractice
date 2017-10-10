@@ -21,6 +21,10 @@
 
 <script>
 /* jslint esversion:6 */
+const url      = window.location.href; 
+const voteName = url.substring(url.lastIndexOf("/") + 1);
+var socket = io('/');
+
 
 </script>
 </body>
