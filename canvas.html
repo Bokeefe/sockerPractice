@@ -15,15 +15,61 @@
         <title>Sock it to me</title>
     </head>
 <body>
-    <h1 id="voteName">Vote Name</h1>
-<button id='yeabtn'>YEA</button><button id="naybtn">NAY</button>
-  
+        <h1 class='voteName' style="text-align:center;"></h1>
+        <table class="table table-bordered" style="font-size:24px; margin:0;" >
+                <thead>
+
+                <tr>
+                    <th>Yea</th>
+                    <th>Nay</th>
+                
+                </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class='yea'>0</td>
+                    <td class='nay'>0</td>
+                   
+                  </tr>
+
+                </tbody>
+              </table>
+
+<div class="big" style="height:100vh;">
+        <div style="background:red; height:40%; text-align:center;" onclick="yea()">
+            <div style="font-size:82px;
+           
+            ">
+                yea
+            </div>
+        </div>
+
+        <div style="background:blue; text-align:center; height:40%;" onclick="nay()">
+            <div style="font-size:82px;">
+                nay
+            </div>
+        </div>  
+</div>  
 
 <script>
 /* jslint esversion:6 */
 const url      = window.location.href; 
 const voteName = url.substring(url.lastIndexOf("/") + 1);
 var socket = io('/');
+$('.voteName').html(voteName);
+function yea () {
+    socket.emit('yea');
+}
+function nay () {
+    socket.emit('nay');
+}
+
+socket.on('update', function (data) {
+    console.log(data);
+    $('.yea').html(data.yea);
+    $('.nay').html(data.nay);
+
+});
 
 
 </script>
