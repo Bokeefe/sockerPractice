@@ -29,8 +29,11 @@
                   <tr>
                     <td class='yea'>0</td>
                     <td class='nay'>0</td>
-                   
                   </tr>
+                  <tr>
+                    <td class='yeaPer'>0  </td>
+                    <td class='nayPer'>0  </td>
+                </tr>
 
                 </tbody>
               </table>
@@ -53,22 +56,35 @@
 
 <script>
 /* jslint esversion:6 */
+var socket = io('/');
 const url      = window.location.href; 
 const voteName = url.substring(url.lastIndexOf("/") + 1);
-var socket = io('/');
-$('.voteName').html(voteName);
+let notVoted = true;
+
+$('.voteName').html(voteName.replace(/_/g, ' '));
+
 function yea () {
-    socket.emit('yea');
+    console.log(notVoted);
+    if(notVoted){
+
+        socket.emit('yea');
+        notVoted = false;
+    }
 }
 function nay () {
-    socket.emit('nay');
+    if(notVoted){
+        socket.emit('nay');
+        notVoted = false;
+    }
 }
 
 socket.on('update', function (data) {
     console.log(data);
     $('.yea').html(data.yea);
     $('.nay').html(data.nay);
-
+    let total = data.yea+data.nay;
+    $('.yeaPer').html(Math.floor(data.yea/total*100)+"%");
+    $('.nayPer').html(Math.floor(data.nay/total*100)+"%");
 });
 
 

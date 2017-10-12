@@ -15,6 +15,13 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.post('/newVote', (req, res) => {
+    var voteName = JSON.parse(req.body.voteName);
+    votes.push(voteName);
+    console.log(votes);
+    res.send(voteName);
+});
+
 app.post('/getVotes',(req,res)=>{
     res.send(votes);
 });
@@ -30,8 +37,6 @@ app.post('/votePick', (req, res) => {
     nsp.on('connection', function(socket){
         allVotes = [];
       socket.join(voteName);
-      //db[voteName].cnctCount++;
-        //socket.rooms[voteName]={'yea':0,'nay':0,'cnctCount':1};
         if(!db[voteName]) {
             db[voteName]={'yea':0,'nay':0,'cnctCount':1};
             socket.emit('update',db[voteName]);
@@ -41,12 +46,15 @@ app.post('/votePick', (req, res) => {
         socket.on('yea', function () {
             db[voteName].yea++;
             socket.emit('update',db[voteName]);
+            console.dir(db);
+            fs.writeFileSync('./db.json',JSON.stringify(db));
           });
           socket.on('nay', function () {
             db[voteName].nay++;
-            socket.emit('update',db[voteName]);            
+            socket.emit('update',db[voteName]);   
+            
+            fs.writeFileSync('./db.json',JSON.stringify(db));            
           });
-      setInterval(()=>{console.log(db[voteName]);},3000);
     });
 });
 
