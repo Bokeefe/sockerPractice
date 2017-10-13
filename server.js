@@ -5,7 +5,7 @@ var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 const path = require('path');
 const fs = require("fs");
-const db = require('./db.json');
+let db = require('./db.json');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -18,14 +18,12 @@ app.get('/', function (req, res) {
 app.post('/newVote', (req, res) => {
     var voteName = JSON.parse(req.body.voteName);
     votes.push(voteName);
-    console.log(votes);
     res.send(voteName);
 });
 
 app.post('/getVotes',(req,res)=>{
     res.send(votes);
 });
-console.log(db);
 app.post('/votePick', (req, res) => { 
     let voteName = req.body.votePick;
     res.send(voteName);
@@ -34,6 +32,8 @@ app.post('/votePick', (req, res) => {
         res.sendFile(__dirname + '/canvas.html');
     });
     var nsp = io.of('/');
+
+
     nsp.on('connection', function(socket){
         allVotes = [];
       socket.join(voteName);
@@ -43,18 +43,31 @@ app.post('/votePick', (req, res) => {
         } else {
             socket.emit('update',db[voteName]);
         }
+
         socket.on('yea', function () {
             db[voteName].yea++;
             socket.emit('update',db[voteName]);
-            console.dir(db);
-            fs.writeFileSync('./db.json',JSON.stringify(db));
+            save(db);
           });
           socket.on('nay', function () {
             db[voteName].nay++;
             socket.emit('update',db[voteName]);   
+            save(db);
             
-            fs.writeFileSync('./db.json',JSON.stringify(db));            
+
+
           });
     });
 });
 
+function save(x){
+    console.log(x);
+    x = JSON.stringify(x);   
+        fs.writeFile('./db.json', x,  function (err) {
+            if (err) {
+                return console.log(err);
+            }
+        
+            console.log("The file was saved!");
+        }); 
+}

@@ -39,7 +39,7 @@
               </table>
 
 <div class="big" style="height:100vh;">
-        <div style="background:red; height:40%; text-align:center;" onclick="yea()">
+        <div style="background:lightred; height:40%; text-align:center;" onclick="yea()">
             <div style="font-size:82px;
            
             ">
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div style="background:blue; text-align:center; height:40%;" onclick="nay()">
+        <div style="background:lightblue; text-align:center; height:40%;" onclick="nay()">
             <div style="font-size:82px;">
                 nay
             </div>
@@ -64,7 +64,6 @@ let notVoted = true;
 $('.voteName').html(voteName.replace(/_/g, ' '));
 
 function yea () {
-    console.log(notVoted);
     if(notVoted){
 
         socket.emit('yea');
@@ -79,7 +78,6 @@ function nay () {
 }
 
 socket.on('update', function (data) {
-    console.log(data);
     $('.yea').html(data.yea);
     $('.nay').html(data.nay);
     let total = data.yea+data.nay;
