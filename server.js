@@ -35,7 +35,6 @@ app.post('/votePick', (req, res) => {
 
 
     nsp.on('connection', function(socket){
-        allVotes = [];
       socket.join(voteName);
         if(!db[voteName]) {
             db[voteName]={'yea':0,'nay':0,'cnctCount':1};
@@ -53,9 +52,6 @@ app.post('/votePick', (req, res) => {
             db[voteName].nay++;
             socket.emit('update',db[voteName]);   
             save(db);
-            
-
-
           });
     });
 });
@@ -63,11 +59,5 @@ app.post('/votePick', (req, res) => {
 function save(x){
     console.log(x);
     x = JSON.stringify(x);   
-        fs.writeFile('./db.json', x,  function (err) {
-            if (err) {
-                return console.log(err);
-            }
-        
-            console.log("The file was saved!");
-        }); 
+    fs.writeFileSync('./db.json', x);
 }
