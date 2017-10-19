@@ -33,9 +33,13 @@ $('#nameVote').keydown(function(event) {
     if (event.keyCode == 13) {
       var  voteName = JSON.stringify($('#nameVote').val().replace(/\s/g, '_'));
       $.post( "/newVote", { voteName }, function( data ) { ///should make a better function
-        $.post( "/votePick", { votePick:data }, function( data ) {  
-            $(location).attr('href', '/'+data);
-        });
+        if(data !== "That name has already been used recently"){
+            $.post( "/votePick", { votePick:data }, function( data ) {  
+                $(location).attr('href', '/'+data);
+            });
+        } else {
+            alert(data);
+        }
       });
     }
   });

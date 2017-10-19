@@ -15,45 +15,51 @@
         <title>Sock it to me</title>
     </head>
 <body>
-        <h1 class='voteName' style="text-align:center;"></h1>
-        <table class="table table-bordered" style="font-size:24px; margin:0;" >
-                <thead>
+    <div style="height:100vh;">
 
+    <div class="stats" >
+        <b class='voteName' style="text-align:center;"></b>
+        <table class="table table-bordered" style="font-size:12px; margin:0;" >
+            <thead>
                 <tr>
-                    <th>Yea</th>
-                    <th>Nay</th>
-                
+                    <th>Yea <span class="yea" style="float:right;">0</span></th>
+                    <th>Nay <span class="nay" style="float:right;">0</span></th>
+                    <th>Abs <span class="abs" style="float:right;">0</span></th>
+                    <th>=<span class="total" style="float:right;">0</span></th>
+                    
                 </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class='yea'>0</td>
-                    <td class='nay'>0</td>
-                  </tr>
-                  <tr>
+            </thead>
+            <tbody>
+                <tr>
                     <td class='yeaPer'>0  </td>
                     <td class='nayPer'>0  </td>
+                    <td class='absPer'>0  </td>
+                    <td>100% </td>
                 </tr>
-
-                </tbody>
-              </table>
-
-<div class="big" style="height:100vh;">
-        <div style="background:lightred; height:40%; text-align:center;" onclick="yea()">
+            </tbody>
+        </table>
+    </div>
+    <div class="big" style=" height:90vh; bottom:0; ">
+        <div style="background:pink; height:30vh; text-align:center;" onclick="yea()">
             <div style="font-size:82px;
-           
+        
             ">
                 yea
             </div>
         </div>
 
-        <div style="background:lightblue; text-align:center; height:40%;" onclick="nay()">
+        <div style="background:lightblue; text-align:center; height:30vh;" onclick="nay()">
             <div style="font-size:82px;">
                 nay
             </div>
         </div>  
-</div>  
-
+        <div style="background:grey; text-align:center; height:30vh;" onclick="abs()">
+            <div style="font-size:82px;">
+                abstain
+            </div>
+        </div>  
+    </div>  
+</div>
 <script>
 /* jslint esversion:6 */
 var socket = io('/');
@@ -65,11 +71,11 @@ $('.voteName').html(voteName.replace(/_/g, ' '));
 
 function yea () {
     if(notVoted){
-
         socket.emit('yea');
         notVoted = false;
     }
 }
+
 function nay () {
     if(notVoted){
         socket.emit('nay');
@@ -77,12 +83,25 @@ function nay () {
     }
 }
 
+function abs () {
+    if(notVoted){
+        socket.emit('abs');
+        notVoted = false;
+    }
+}
+
 socket.on('update', function (data) {
+    console.log(data);
+    let total = data.yea+data.nay+data.abs;
     $('.yea').html(data.yea);
     $('.nay').html(data.nay);
-    let total = data.yea+data.nay;
-    $('.yeaPer').html(Math.floor(data.yea/total*100)+"%");
-    $('.nayPer').html(Math.floor(data.nay/total*100)+"%");
+    $('.abs').html(data.abs);
+    $('.total').html(total);
+    isNaN(Math.floor(data.yea/total*100)) ? $('.yeaPer').html("0%"):$('.yeaPer').html(Math.floor(data.yea/total*100)+"%");
+    isNaN(Math.floor(data.nay/total*100)) ? $('.nayPer').html("0%"):$('.nayPer').html(Math.floor(data.nay/total*100)+"%");
+    isNaN(Math.floor(data.abs/total*100)) ? $('.absPer').html("0%"):$('.absPer').html(Math.floor(data.abs/total*100)+"%");
+
+
 });
 
 
