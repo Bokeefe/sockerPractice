@@ -58,17 +58,20 @@ app.post('/votePick', (req, res) => {
             db[voteName].yea++;
             socket.emit('update',db[voteName]);
             save(db,voteName);
-          });
-          socket.on('nay', function () {
+        });
+
+        socket.on('nay', function () {
             db[voteName].nay++;
             socket.emit('update',db[voteName]);   
             save(db,voteName);
-          });
-          socket.on('abs', function () {
+        });
+
+        socket.on('abs', function () {
             db[voteName].abs++;
             socket.emit('update',db[voteName]);   
             save(db,voteName);
-          });
+        });
+
     });
 });
 
