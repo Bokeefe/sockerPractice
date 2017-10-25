@@ -68,7 +68,10 @@ const voteName = url.substring(url.lastIndexOf("/") + 1);
 let notVoted = true;
 
 $('.voteName').html(voteName.replace(/_/g, ' '));
-
+socket.on('connect', function(voteName) {
+   // Connected, let's sign-up for to receive messages for this room
+   socket.emit('room', voteName);
+});
 function yea () {
     if(notVoted){
         socket.emit('yea');

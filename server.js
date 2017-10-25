@@ -45,35 +45,50 @@ app.post('/votePick', (req, res) => {
     var nsp = io.of('/');
 
 
-    nsp.on('connection', function(socket){
-      socket.join(voteName);
-        if(!db[voteName]) {
-            db[voteName]={'yea':0,'nay':0,'abs':0,'cnctCount':1};
-            socket.emit('update',db[voteName]);
-        } else {
-            socket.emit('update',db[voteName]);
-        }
+    io.sockets.on('connection', (socket) => {
 
-        socket.on('yea', function () {
-            db[voteName].yea++;
-            socket.emit('update',db[voteName]);
-            save(db,voteName);
+        socket.on('room', (voteName) => {
+            //TODO check if room exists
+            socket.join(voteName);
+            if(!db[voteName]) {
+                db[voteName]={'yea':0,'nay':0,'abs':0,'cnctCount':1};
+                io.emit('update',db[voteName]);
+            } else {
+                io.emit('update',db[voteName]);
+
+            }
+          
         });
-
-        socket.on('nay', function () {
-            db[voteName].nay++;
-            socket.emit('update',db[voteName]);   
-            save(db,voteName);
-        });
-
-        socket.on('abs', function () {
-            db[voteName].abs++;
-            socket.emit('update',db[voteName]);   
-            save(db,voteName);
-        });
-
     });
+
+    // nsp.on('connection', (io)=>{
+    //   io.join(voteName);
+
+
+
+
+    //     io.on('yea', ()=>{
+    //         db[voteName].yea++;
+    //         io.emit('update',db[voteName]);
+    //         console.log(db[voteName]);
+    //     });
+        
+    //     io.on('nay', ()=>{
+    //         db[voteName].nay++;
+    //         io.emit('update',db[voteName]);   
+    //         console.log(db[voteName]);
+    //     });
+        
+    //     io.on('abs', ()=>{
+    //         db[voteName].abs++;
+    //         io.emit('update',db[voteName]);   
+    //         console.log(db[voteName]);
+    //     });
+
+    // });
 });
+
+
 
 function save(entireDB,name){
     console.log(entireDB[name]);
