@@ -62,38 +62,46 @@
 </div>
 <script>
 /* jslint esversion:6 */
-var socket = io('/');
+var io = io('/');
 const url      = window.location.href; 
 const voteName = url.substring(url.lastIndexOf("/") + 1);
 let notVoted = true;
 
 $('.voteName').html(voteName.replace(/_/g, ' '));
-socket.on('connect', function(voteName) {
+
+function getRoom(){
+   return voteName;
+}
+
+io.on('connect', () => {
    // Connected, let's sign-up for to receive messages for this room
-   socket.emit('room', voteName);
+ 
+   io.emit('room', getRoom());
+   console.dir(io.id);
 });
+
 function yea () {
     if(notVoted){
-        socket.emit('yea');
+        io.emit('yea',voteName);
         notVoted = false;
     }
 }
 
 function nay () {
     if(notVoted){
-        socket.emit('nay');
+        io.emit('nay',voteName);
         notVoted = false;
     }
 }
 
 function abs () {
     if(notVoted){
-        socket.emit('abs');
+        io.emit('abs',voteName);
         notVoted = false;
     }
 }
 
-socket.on('update', function (data) {
+io.on('update', (data) => {
     console.log(data);
     let total = data.yea+data.nay+data.abs;
     $('.yea').html(data.yea);
@@ -103,8 +111,6 @@ socket.on('update', function (data) {
     isNaN(Math.floor(data.yea/total*100)) ? $('.yeaPer').html("0%"):$('.yeaPer').html(Math.floor(data.yea/total*100)+"%");
     isNaN(Math.floor(data.nay/total*100)) ? $('.nayPer').html("0%"):$('.nayPer').html(Math.floor(data.nay/total*100)+"%");
     isNaN(Math.floor(data.abs/total*100)) ? $('.absPer').html("0%"):$('.absPer').html(Math.floor(data.abs/total*100)+"%");
-
-
 });
 
 

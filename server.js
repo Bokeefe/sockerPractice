@@ -21,7 +21,6 @@ app.get('/', function (req, res) {
 
 app.post('/newVote', (req, res) => {
     var voteName = JSON.parse(req.body.voteName);
-    console.log(votes.indexOf(voteName));
     if(votes.indexOf(voteName) !== -1 ){
         res.send("That name has already been used recently");
     } else {
@@ -48,8 +47,11 @@ app.post('/votePick', (req, res) => {
     io.sockets.on('connection', (socket) => {
 
         socket.on('room', (voteName) => {
+
             //TODO check if room exists
             socket.join(voteName);
+            
+
             if(!db[voteName]) {
                 db[voteName]={'yea':0,'nay':0,'abs':0,'cnctCount':1};
                 io.emit('update',db[voteName]);
@@ -57,36 +59,32 @@ app.post('/votePick', (req, res) => {
                 io.emit('update',db[voteName]);
 
             }
-          
+        }); 
+
+
+        socket.on('yea', (voteName)=>{
+            db[voteName].yea++;
+            io.emit('update',db[voteName]);
+            console.log(db[voteName]);
         });
+        
+        socket.on('nay', (voteName)=>{
+            db[voteName].nay++;
+            io.emit('update',db[voteName]);   
+            console.log(db[voteName]);
+        });
+        
+        socket.on('abs', (voteName)=>{
+            db[voteName].abs++;
+            io.emit('update',db[voteName]);   
+            console.log(db[voteName]);
+        });
+
+
+
     });
-
-    // nsp.on('connection', (io)=>{
-    //   io.join(voteName);
-
-
-
-
-    //     io.on('yea', ()=>{
-    //         db[voteName].yea++;
-    //         io.emit('update',db[voteName]);
-    //         console.log(db[voteName]);
-    //     });
-        
-    //     io.on('nay', ()=>{
-    //         db[voteName].nay++;
-    //         io.emit('update',db[voteName]);   
-    //         console.log(db[voteName]);
-    //     });
-        
-    //     io.on('abs', ()=>{
-    //         db[voteName].abs++;
-    //         io.emit('update',db[voteName]);   
-    //         console.log(db[voteName]);
-    //     });
-
-    // });
 });
+
 
 
 
