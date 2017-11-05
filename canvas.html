@@ -90,14 +90,14 @@ function yea () {
 
 function nay () {
     if(notVoted){
-        io.emit('nay',voteName);
+        socket.emit('nay',voteName);
         notVoted = false;
     }
 }
 
 function abs () {
     if(notVoted){
-        io.emit('abs',voteName);
+        socket.emit('abs',voteName);
         notVoted = false;
     }
 }

@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 const path = require('path');
 const fs = require("fs");
 let db = require('./db.json');
+const voted = new Set;
+ 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -46,6 +48,13 @@ app.post('/votePick', (req, res) => {
 
 
     io.sockets.on('connection', (socket) => {
+
+        if(voted.has(socket)) return;
+        
+        voted.add(socket);
+
+
+
 
         socket.on('room', (voteName) => {
 
