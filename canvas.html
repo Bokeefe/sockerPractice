@@ -62,9 +62,9 @@
 </div>
 <script>
 /* jslint esversion:6 */
-var io = io('/');
+var socket = io.connect('http://localhost');
 const url      = window.location.href; 
-const voteName = url.substring(url.lastIndexOf("/") + 1);
+let voteName = url.substring(url.lastIndexOf("/") + 1);
 let notVoted = true;
 
 $('.voteName').html(voteName.replace(/_/g, ' '));
@@ -73,16 +73,17 @@ function getRoom(){
    return voteName;
 }
 
-io.on('connect', () => {
+socket.on('connect', () => {
    // Connected, let's sign-up for to receive messages for this room
  
-   io.emit('room', getRoom());
-   console.dir(io.id);
+   socket.emit('room', getRoom());
+   console.dir(socket.id);
 });
 
 function yea () {
     if(notVoted){
-        io.emit('yea',voteName);
+        socket.emit('yea',voteName);
+        console.log(voteName)
         notVoted = false;
     }
 }
@@ -101,7 +102,7 @@ function abs () {
     }
 }
 
-io.on('update', (data) => {
+socket.on('update', (data) => {
     console.log(data);
     let total = data.yea+data.nay+data.abs;
     $('.yea').html(data.yea);

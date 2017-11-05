@@ -41,6 +41,7 @@ app.post('/votePick', (req, res) => {
     app.get('/'+voteName,(req,res)=>{
         res.sendFile(__dirname + '/canvas.html');
     });
+    
     var nsp = io.of('/');
 
 
@@ -50,14 +51,13 @@ app.post('/votePick', (req, res) => {
 
             //TODO check if room exists
             socket.join(voteName);
-            
 
             if(!db[voteName]) {
                 db[voteName]={'yea':0,'nay':0,'abs':0,'cnctCount':1};
                 io.emit('update',db[voteName]);
+           
             } else {
                 io.emit('update',db[voteName]);
-
             }
         }); 
 
@@ -65,7 +65,7 @@ app.post('/votePick', (req, res) => {
         socket.on('yea', (voteName)=>{
             db[voteName].yea++;
             io.emit('update',db[voteName]);
-            console.log(db[voteName]);
+            console.log(db[voteName].cnctCount);
         });
         
         socket.on('nay', (voteName)=>{
