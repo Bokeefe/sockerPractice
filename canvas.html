@@ -18,14 +18,14 @@
     <div style="height:100vh;">
 
     <div class="stats" >
-        <b class='voteName' style="text-align:center;"></b>
+        <b class='voteName' style="text-align:center;"></b>  <span class="cnctCount pull-right"></span>
         <table class="table table-bordered" style="font-size:12px; margin:0;" >
             <thead>
                 <tr>
                     <th>Yea <span class="yea" style="float:right;">0</span></th>
                     <th>Nay <span class="nay" style="float:right;">0</span></th>
                     <th>Abstain <span class="abs" style="float:right;">0</span></th>
-                    <th>=<span class="total" style="float:right;">0</span></th>
+                    <th>Total Votes Cast=<span class="total" style="float:right;">0</span></th>
                     
                 </tr>
             </thead>
@@ -109,6 +109,7 @@ socket.on('update', (data) => {
     $('.nay').html(data.nay);
     $('.abs').html(data.abs);
     $('.total').html(total);
+    $('.cnctCount').html("Voters Connected: "+data.cnctCount);
     isNaN(Math.floor(data.yea/total*100)) ? $('.yeaPer').html("0%"):$('.yeaPer').html(Math.floor(data.yea/total*100)+"%");
     isNaN(Math.floor(data.nay/total*100)) ? $('.nayPer').html("0%"):$('.nayPer').html(Math.floor(data.nay/total*100)+"%");
     isNaN(Math.floor(data.abs/total*100)) ? $('.absPer').html("0%"):$('.absPer').html(Math.floor(data.abs/total*100)+"%");

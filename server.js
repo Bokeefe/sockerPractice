@@ -66,6 +66,7 @@ app.post('/votePick', (req, res) => {
                 io.emit('update',db[voteName]);
            
             } else {
+                db[voteName].cnctCount++;
                 io.emit('update',db[voteName]);
             }
         }); 
@@ -74,24 +75,26 @@ app.post('/votePick', (req, res) => {
         socket.on('yea', (voteName)=>{
             db[voteName].yea++;
             io.emit('update',db[voteName]);
-            console.log(db[voteName].cnctCount);
         });
         
         socket.on('nay', (voteName)=>{
             db[voteName].nay++;
             io.emit('update',db[voteName]);   
-            console.log(db[voteName]);
         });
         
         socket.on('abs', (voteName)=>{
             db[voteName].abs++;
             io.emit('update',db[voteName]);   
-            console.log(db[voteName]);
         });
 
-
+        socket.on('disconnect', ()=>{
+            db[voteName].cnctCount--;
+            db[voteName].cnctCount===0 ? console.log("write vote") : console.log( db[voteName].cnctCount );
+        });
 
     });
+
+
 });
 
 
