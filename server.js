@@ -55,12 +55,8 @@ app.post('/votePick', (req, res) => {
     io.sockets.on('connection', (socket) => {
 
         if(voted.has(socket)) return;
+            voted.add(socket);
         
-        voted.add(socket);
-
-
-
-
         socket.on('room', (voteName) => {
 
             //TODO check if room exists
@@ -101,10 +97,7 @@ app.post('/votePick', (req, res) => {
             db[voteName].cnctCount--;
             db[voteName].cnctCount===0 ? save(db,voteName) : console.log( db[voteName].cnctCount );
         });
-
     });
-
-
 });
 
 function save(entireDB,name){

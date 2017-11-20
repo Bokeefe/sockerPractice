@@ -14,7 +14,7 @@
     <title>Sock it to me</title>
 </head>
 <body>
-    <div class="container" style="margin-top:10%;">
+    <div class="container">
         <h1 style="align-text:center">1 person = 1 vote</h1>
         <div class="">
           <input id="nameVote" type="text" class="form-control" placeholder="Create a new vote by naming it or..." onsubmit="reset()" >
@@ -27,7 +27,7 @@
             <table class="table">
                     <thead>
                       <tr>
-                          <th></th>
+                          <th>Vote Name</th>
                         <th>Yea</th>
                         <th>Nay</th>
                         <th>Abstain</th>
@@ -61,10 +61,7 @@ $('#nameVote').keydown(function(event) {
 $.post( "/getVotes", function( votes ) {  
         var options = $('select');
         var num = 0;
-        // console.log(votes);
 
-        // votes = votes.currentVotes
-        // oldVotes = votes.oldVotes
         $.each(votes.currentVotes, (i) => {
             options.append($("<option />").val(num).text(votes.currentVotes[i]));
             num++;
@@ -73,7 +70,8 @@ $.post( "/getVotes", function( votes ) {
         $.each(votes.oldVotes, (i)=>{
             console.log(votes.oldVotes[i].voteName);
             let total = votes.oldVotes[i].yea+votes.oldVotes[i].nay+votes.oldVotes[i].abs;
-            $("tbody").append('<tr><td>'+votes.oldVotes[i].voteName+'</td><<td>'+votes.oldVotes[i].yea+'</td><td>'+votes.oldVotes[i].nay+'</td><td>'+votes.oldVotes[i].abs+'</td><td>'+total+'</td><tr>');
+
+            $("tbody").append('<tr><td>'+votes.oldVotes[i].voteName.replace(/_/g, " ")+'</td><<td>'+votes.oldVotes[i].yea+'</td><td>'+votes.oldVotes[i].nay+'</td><td>'+votes.oldVotes[i].abs+'</td><td>'+total+'</td><tr>');
             num++;
         });
 
