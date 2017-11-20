@@ -5,7 +5,7 @@ var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 const path = require('path');
 const fs = require("fs");
-let db = require('./db.json');
+let db = [];
 const voted = new Set;
  
 app.use(bodyParser.urlencoded({extended: false}));
@@ -14,9 +14,11 @@ app.use(bodyParser.json());
 server.listen(80);
 let votes = [];
 
+
 db.forEach((i)=> {
     votes.push(i.voteName);
 });
+
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -32,8 +34,11 @@ app.post('/newVote', (req, res) => {
 });
 
 app.post('/getVotes',(req,res)=>{
-    res.send(votes);
+    const oldVotes = require('./db.json');
+    let allVotes = {"currentVotes": votes, "oldVotes":oldVotes};
+    res.send(allVotes);
 });
+
 
 
 app.post('/votePick', (req, res) => { 
@@ -87,9 +92,14 @@ app.post('/votePick', (req, res) => {
             io.emit('update',db[voteName]);   
         });
 
+        socket.on('save', (voteName)=>{
+            save(db,voteName);
+            saveArray(db,voteName);
+        });
+
         socket.on('disconnect', ()=>{
             db[voteName].cnctCount--;
-            db[voteName].cnctCount===0 ? console.log("write vote") : console.log( db[voteName].cnctCount );
+            db[voteName].cnctCount===0 ? save(db,voteName) : console.log( db[voteName].cnctCount );
         });
 
     });
@@ -97,12 +107,21 @@ app.post('/votePick', (req, res) => {
 
 });
 
-
-
-
 function save(entireDB,name){
-    console.log(entireDB[name]);
+    let db = require( "./db.json");
+    db[name] = entireDB[name];
+    db = JSON.stringify(db);   
+   fs.writeFileSync('./db.json', db);
 
-    //x = JSON.stringify(x);   
-   // fs.writeFileSync('./db.json', x);
+}
+
+function saveArray (entireDB,name) {
+    console.log('made it');
+   entireDB[name].voteName = name;
+   let dbArray = require('./dbArray.json');
+   console.log(dbArray);
+   dbArray.push(entireDB[name]);
+   console.log(dbArray);
+   x = JSON.stringify(dbArray);   
+   fs.writeFileSync('./dbArray.json', x);
 }

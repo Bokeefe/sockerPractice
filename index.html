@@ -47,6 +47,8 @@ $('#nameVote').keydown(function(event) {
 $.post( "/getVotes", function( votes ) {  
         var options = $('select');
         var num = 0;
+        console.log(votes.oldVotes);
+        votes = votes.currentVotes
 
         $.each(votes, function(i) {
             options.append($("<option />").val(num).text(votes[i]));

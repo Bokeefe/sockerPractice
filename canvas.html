@@ -13,6 +13,18 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script src="/socket.io/socket.io.js"></script>
         <title>Sock it to me</title>
+        <style>
+        .end {
+            right:0;
+            position:fixed;
+            background-color: green;
+            z-index: 1;
+            height:50px;
+            width:40%;
+
+
+        }    
+        </style>
     </head>
 <body>
     <div style="height:100vh;">
@@ -40,7 +52,7 @@
         </table>
     </div>
     <div class="big" style=" height:90vh; bottom:0; ">
-        <div style="background:pink; height:30vh; text-align:center;" onclick="yea()">
+        <div style="background:pink; height:25vh; text-align:center;" onclick="yea()">
             <div style="font-size:82px;
         
             ">
@@ -48,18 +60,26 @@
             </div>
         </div>
 
-        <div style="background:lightblue; text-align:center; height:30vh;" onclick="nay()">
+        <div style="background:lightblue; text-align:center; height:25vh;" onclick="nay()">
             <div style="font-size:82px;">
                 nay
             </div>
         </div>  
-        <div style="background:grey; text-align:center; height:30vh;" onclick="abs()">
+        <div style="background:grey; text-align:center; height:25vh;" onclick="abs()">
             <div style="font-size:82px;">
                 abstain
             </div>
         </div>  
+        <div style="background:black; height:25vh; text-align:center; color:#fff;" onclick="save()">
+            <div style="font-size:82px;">
+                Record Vote >>>
+            </div>
+        </div>
     </div>  
 </div>
+
+
+
 <script>
 /* jslint esversion:6 */
 var socket = io.connect('http://localhost');
@@ -100,6 +120,10 @@ function abs () {
         socket.emit('abs',voteName);
         notVoted = false;
     }
+}
+
+function save () {
+    socket.emit('save',voteName);
 }
 
 socket.on('update', (data) => {
