@@ -34,7 +34,7 @@ app.post('/newVote', (req, res) => {
 });
 
 app.post('/getVotes',(req,res)=>{
-    const oldVotes = require('./db.json');
+    const oldVotes = require('./dbArray.json');
     let allVotes = {"currentVotes": votes, "oldVotes":oldVotes};
     res.send(allVotes);
 });

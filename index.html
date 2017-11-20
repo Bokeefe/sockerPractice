@@ -24,7 +24,21 @@
         </select>
         <hr>
             <h1 id="title" style="font-weight: 900">STORED VOTES...</h1>
-        <div id="experiment">
+            <table class="table">
+                    <thead>
+                      <tr>
+                          <th></th>
+                        <th>Yea</th>
+                        <th>Nay</th>
+                        <th>Abstain</th>
+                        <th>Total Votes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                      </tr>
+                    </tbody>
+                  </table>
         </div>
       </div>
 <script>
@@ -47,13 +61,22 @@ $('#nameVote').keydown(function(event) {
 $.post( "/getVotes", function( votes ) {  
         var options = $('select');
         var num = 0;
-        console.log(votes.oldVotes);
-        votes = votes.currentVotes
+        // console.log(votes);
 
-        $.each(votes, function(i) {
-            options.append($("<option />").val(num).text(votes[i]));
+        // votes = votes.currentVotes
+        // oldVotes = votes.oldVotes
+        $.each(votes.currentVotes, (i) => {
+            options.append($("<option />").val(num).text(votes.currentVotes[i]));
             num++;
         });
+            console.log(votes);
+        $.each(votes.oldVotes, (i)=>{
+            console.log(votes.oldVotes[i].voteName);
+            let total = votes.oldVotes[i].yea+votes.oldVotes[i].nay+votes.oldVotes[i].abs;
+            $("tbody").append('<tr><td>'+votes.oldVotes[i].voteName+'</td><<td>'+votes.oldVotes[i].yea+'</td><td>'+votes.oldVotes[i].nay+'</td><td>'+votes.oldVotes[i].abs+'</td><td>'+total+'</td><tr>');
+            num++;
+        });
+
     });
 
 function votePicked (x){
