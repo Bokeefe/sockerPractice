@@ -14,10 +14,37 @@
         <script src="/socket.io/socket.io.js"></script>
         <title>Sock it to me</title>
         <style>
+        html,body { height:100%; }
+
+        .btn-panel{
+            height:100%;
+        } 
         .btn {
             width:100%;
+            margin: 2% 0 2% 0;
+            font-size:2em;
         }
-        
+   
+        #yeaBtn{
+            background-color:lightsteelblue;
+
+            height:20%;
+        }
+        #nayBtn{
+            background-color:pink;
+
+            height:20%;
+        }
+        #absBtn{
+            background-color:#999;
+
+            height:20%;
+        }
+        #saveBtn{
+            background-color:black;
+            color:#fff;
+            height:20%;
+        }
 
         </style>
     </head>
@@ -46,11 +73,13 @@
             </tbody>
         </table>
     </div>
-
+    <div class="btn-panel">
         <button class="btn" id="yeaBtn" >Yea</button>
         <button class="btn" id="nayBtn" >Nay</button>
-        <button class="btn" id="absBtn" >Abs</button>
+        <button class="btn" id="absBtn" >Abstain</button>
         <button class="btn" id="saveBtn" >Save</button>
+    </div>
+
 
 
 
@@ -82,7 +111,6 @@
 
     $('#yeaBtn').click(()=>{
         if(notVoted){
-            $('#yeaBtn').html('FUCK!!!');
             socket.emit('yea',voteName);
         }
     });
@@ -91,21 +119,18 @@
     $('#nayBtn').click(()=>{
 
         if(notVoted){
-            $('#nayBtn').html('noobs');
             socket.emit('nay',voteName);
         }
     });
 
     $('#absBtn').click(()=>{
         if(notVoted){
-            $('#absBtn').html('noobs');
             socket.emit('abs',voteName);
         }
     });
 
     $('#saveBtn').click(()=>{
         if(notVoted){
-            $('#saveBtn').html('noobs');
             socket.emit('save', voteName);
         }
     });
