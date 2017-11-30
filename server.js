@@ -1,19 +1,22 @@
 /* jshint esversion:6 */
 var app = require('express')();
+var http = require('http').Server(app);
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 const path = require('path');
 const fs = require("fs");
-let db = [];
+
 const voted = new Set;
- 
+var nsp = io.of('/');
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-server.listen(80);
-let votes = [];
+server.listen(85);
 
+let votes = [];
+let db = [];
 
 db.forEach((i)=> {
     votes.push(i.voteName);
@@ -39,21 +42,15 @@ app.post('/getVotes',(req,res)=>{
     res.send(allVotes);
 });
 
-
-
 app.post('/votePick', (req, res) => { 
     let voteName = req.body.votePick;
     res.send(voteName);
 
     app.get('/'+voteName,(req,res)=>{
-        res.sendFile(__dirname + '/canvas.html');
+        res.sendFile(__dirname + '/room.html');
     });
     
-    var nsp = io.of('/');
-
-
-    io.sockets.on('connection', (socket) => {
-
+    nsp.on('connection', (socket) => {
         if(voted.has(socket)) return;
             voted.add(socket);
         
@@ -63,7 +60,7 @@ app.post('/votePick', (req, res) => {
             socket.join(voteName);
 
             if(!db[voteName]) {
-                db[voteName]={'yea':0,'nay':0,'abs':0,'cnctCount':1};
+                db[voteName]={'yea':0,'nay':0,'abs':0,'cnctCount':1,'date':Date.now()};
                 io.emit('update',db[voteName]);
            
             } else {
@@ -71,7 +68,6 @@ app.post('/votePick', (req, res) => {
                 io.emit('update',db[voteName]);
             }
         }); 
-
 
         socket.on('yea', (voteName)=>{
             db[voteName].yea++;
@@ -109,12 +105,9 @@ function save(entireDB,name){
 }
 
 function saveArray (entireDB,name) {
-    console.log('made it');
    entireDB[name].voteName = name;
    let dbArray = require('./dbArray.json');
-   console.log(dbArray);
    dbArray.push(entireDB[name]);
-   console.log(dbArray);
    x = JSON.stringify(dbArray);   
    fs.writeFileSync('./dbArray.json', x);
 }

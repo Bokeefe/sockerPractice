@@ -12,14 +12,27 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <title>Sock it to me</title>
+    <style>
+        select{
+            margin-top:20px;
+            height: 40px; width: 100%;
+            font-size: 30px; 
+            background-color: rgba(0,0,0,.2);
+        }
+        @media screen and (max-width: 480px) {
+            select {
+                font-size:20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="align-text:center">1 person = 1 vote</h1>
+        <h1 style="text-align:center">1 person = 1 vote</h1>
         <div class="">
           <input id="nameVote" type="text" class="form-control" placeholder="Create a new vote by naming it or..." onsubmit="reset()" >
         </div>
-        <select id="votePick"  onChange="votePicked(this)" style=" margin-top:20px; height: 40px; width: 100%; font-size: 30px; background-color: rgba(0,0,0,.2);" >
+        <select id="votePick"  onChange="votePicked(this)" >
             <option value="nothing">select from votes in progress</option>
         </select>
         <hr>
@@ -28,6 +41,7 @@
                     <thead>
                       <tr>
                           <th>Vote Name</th>
+                          <!-- <th>Date</th> -->
                         <th>Yea</th>
                         <th>Nay</th>
                         <th>Abstain</th>
@@ -66,13 +80,16 @@ $.post( "/getVotes", function( votes ) {
             options.append($("<option />").val(num).text(votes.currentVotes[i]));
             num++;
         });
-            console.log(votes);
         $.each(votes.oldVotes, (i)=>{
-            console.log(votes.oldVotes[i].voteName);
-            let total = votes.oldVotes[i].yea+votes.oldVotes[i].nay+votes.oldVotes[i].abs;
+            const dateNow = Date.now();
+            
+            if(dateNow-votes.oldVotes[i].date>604800){
+                console.log(votes.oldVotes[i].date);
+                let total = votes.oldVotes[i].yea+votes.oldVotes[i].nay+votes.oldVotes[i].abs;
 
-            $("tbody").append('<tr><td>'+votes.oldVotes[i].voteName.replace(/_/g, " ")+'</td><<td>'+votes.oldVotes[i].yea+'</td><td>'+votes.oldVotes[i].nay+'</td><td>'+votes.oldVotes[i].abs+'</td><td>'+total+'</td><tr>');
-            num++;
+                $("tbody").append('<tr><td>'+votes.oldVotes[i].voteName.replace(/_/g, " ")+'</td><<td>'+votes.oldVotes[i].yea+'</td><td>'+votes.oldVotes[i].nay+'</td><td>'+votes.oldVotes[i].abs+'</td><td>'+total+'</td><tr>');
+                num++;
+            }
         });
 
     });
@@ -83,6 +100,7 @@ function votePicked (x){
         $(location).attr('href', '/'+data);
     });
 }
+
 
 </script>
 </body>

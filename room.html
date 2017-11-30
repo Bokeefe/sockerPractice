@@ -11,12 +11,14 @@
         crossorigin="anonymous"></script>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="htps://socket.io/socket.io.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
         <title>Sock it to me</title>
         <style>
         .btn {
             width:100%;
         }
+        
+
         </style>
     </head>
 <body>
@@ -45,8 +47,12 @@
         </table>
     </div>
 
-        <button class="btn" id="yeaBtn" >Frig</button>
+        <button class="btn" id="yeaBtn" >Yea</button>
         <button class="btn" id="nayBtn" >Nay</button>
+        <button class="btn" id="absBtn" >Abs</button>
+        <button class="btn" id="saveBtn" >Save</button>
+
+
 
 
 
@@ -54,7 +60,8 @@
 <script>
 /* jslint esversion:6 */
 
-    var socket = io.connect('http://localhost:85');
+    const socket = io('/');
+    
     const url      = window.location.href; 
     let voteName = url.substring(url.lastIndexOf("/") + 1);
     let notVoted = true;
@@ -86,6 +93,20 @@
         if(notVoted){
             $('#nayBtn').html('noobs');
             socket.emit('nay',voteName);
+        }
+    });
+
+    $('#absBtn').click(()=>{
+        if(notVoted){
+            $('#absBtn').html('noobs');
+            socket.emit('abs',voteName);
+        }
+    });
+
+    $('#saveBtn').click(()=>{
+        if(notVoted){
+            $('#saveBtn').html('noobs');
+            socket.emit('save', voteName);
         }
     });
 
