@@ -36,7 +36,7 @@
             <option value="nothing">select from votes in progress</option>
         </select>
         <hr>
-            <h1 id="title" style="font-weight: 900">STORED VOTES...</h1>
+            <h3 id="title" style="font-weight: 900">STORED VOTES from this week:</h3>
             <table class="table">
                     <thead>
                       <tr>
@@ -81,9 +81,12 @@ $.post( "/getVotes", function( votes ) {
             num++;
         });
         votes.oldVotes.reverse();
+        const dateNow = Date.now();
         $.each(votes.oldVotes, (i)=>{
-            const dateNow = Date.now();
-            if(dateNow-votes.oldVotes[i].date>604800){
+            
+            console.log(votes.oldVotes[i].voteName,dateNow-votes.oldVotes[i].date);
+
+            if(dateNow-votes.oldVotes[i].date<604800000){
                 let total = votes.oldVotes[i].yea+votes.oldVotes[i].nay+votes.oldVotes[i].abs;
 
                 $("tbody").append('<tr><td>'+votes.oldVotes[i].voteName.replace(/_/g, " ")+'</td><<td>'+votes.oldVotes[i].yea+'</td><td>'+votes.oldVotes[i].nay+'</td><td>'+votes.oldVotes[i].abs+'</td><td>'+total+'</td><tr>');

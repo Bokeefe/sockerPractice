@@ -47,6 +47,7 @@ app.post('/votePick', (req, res) => {
     res.send(voteName);
 
     app.get('/'+voteName,(req,res)=>{
+        //TODO Verify if vote exists
         res.sendFile(__dirname + '/room.html');
     });
     
@@ -55,8 +56,6 @@ app.post('/votePick', (req, res) => {
             voted.add(socket);
         
         socket.on('room', (voteName) => {
-
-            //TODO check if room exists
             socket.join(voteName);
 
             if(!db[voteName]) {
@@ -115,16 +114,18 @@ function saveArray (entireDB,name) {
 }
 
 // app.get('*', function(req, res){
-//     res.send(`
-//     <style>
-//     body{
-//         text-align:center;
-//     }
-//     h1,p,a {
-//         font-size:36px;
-//     }
-//     </style>
-//     <h1>404</h1>
-//      This vote may have already ended.<br> <a href="/">
-//      <<< BACK</a>`, 404);
+//     console.log(db[voteName]);
+    
+//     // res.send(`
+//     // <style>
+//     // body{
+//     //     text-align:center;
+//     // }
+//     // h1,p,a {
+//     //     font-size:36px;
+//     // }
+//     // </style>
+//     // <h1>404</h1>
+//     //  This vote may have already ended.<br> <a href="/">
+//     //  <<< BACK</a>`, 404);
 // });
