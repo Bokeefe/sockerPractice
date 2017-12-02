@@ -80,15 +80,14 @@ $.post( "/getVotes", function( votes ) {
             options.append($("<option />").val(num).text(votes.currentVotes[i]));
             num++;
         });
+        votes.oldVotes.reverse();
         $.each(votes.oldVotes, (i)=>{
             const dateNow = Date.now();
-            
             if(dateNow-votes.oldVotes[i].date>604800){
-                console.log(votes.oldVotes[i].date);
                 let total = votes.oldVotes[i].yea+votes.oldVotes[i].nay+votes.oldVotes[i].abs;
 
                 $("tbody").append('<tr><td>'+votes.oldVotes[i].voteName.replace(/_/g, " ")+'</td><<td>'+votes.oldVotes[i].yea+'</td><td>'+votes.oldVotes[i].nay+'</td><td>'+votes.oldVotes[i].abs+'</td><td>'+total+'</td><tr>');
-                num++;
+                num--;
             }
         });
 

@@ -112,6 +112,9 @@
     $('#yeaBtn').click(()=>{
         if(notVoted){
             socket.emit('yea',voteName);
+            notVoted = false;
+        } else {
+            alert("Your vote was already cast. Hit 'Save' to end this vote.");
         }
     });
 
@@ -120,23 +123,33 @@
 
         if(notVoted){
             socket.emit('nay',voteName);
+            notVoted = false;
+        } else {
+            alert("Your vote was already cast. Hit 'Save' to end this vote.");
         }
     });
 
     $('#absBtn').click(()=>{
         if(notVoted){
             socket.emit('abs',voteName);
+            notVoted = false;
+        } else {
+            alert("Your vote was already cast. Hit 'Save' to end this vote.");
         }
     });
 
     $('#saveBtn').click(()=>{
-        if(notVoted){
-            socket.emit('save', voteName);
-        }
+        
+            if(!notVoted){
+                if (confirm("End this vote and save?")){
+                    socket.emit('save', voteName);
+                }
+            } else {
+                alert("Your vote has not been cast yet");
+            }
     });
 
     socket.on('update', (data) => {
-        console.log(data);
         let total = data.yea+data.nay+data.abs;
         $('.yea').html(data.yea);
         $('.nay').html(data.nay);
@@ -147,6 +160,19 @@
         isNaN(Math.floor(data.nay/total*100)) ? $('.nayPer').html("0%"):$('.nayPer').html(Math.floor(data.nay/total*100)+"%");
         isNaN(Math.floor(data.abs/total*100)) ? $('.absPer').html("0%"):$('.absPer').html(Math.floor(data.abs/total*100)+"%");
     });
+
+    socket.on('endVote', (data) => {
+        let total = data.yea+data.nay+data.abs;
+
+        if(confirm(`Someone has called this vote to an end. Final count:
+        Yea: ${data.yea}, Nay: ${data.nay}, Abstain ${data.nay}, TOTAL ${total}
+        `)){
+            window.location = '/';
+        }
+       
+        
+    });
+
 
 
 </script>

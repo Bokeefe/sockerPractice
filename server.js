@@ -87,7 +87,9 @@ app.post('/votePick', (req, res) => {
         socket.on('save', (voteName)=>{
             save(db,voteName);
             saveArray(db,voteName);
+            io.emit('endVote',db[voteName]);
         });
+
 
         socket.on('disconnect', ()=>{
             db[voteName].cnctCount--;
@@ -111,3 +113,18 @@ function saveArray (entireDB,name) {
    x = JSON.stringify(dbArray);   
    fs.writeFileSync('./dbArray.json', x);
 }
+
+// app.get('*', function(req, res){
+//     res.send(`
+//     <style>
+//     body{
+//         text-align:center;
+//     }
+//     h1,p,a {
+//         font-size:36px;
+//     }
+//     </style>
+//     <h1>404</h1>
+//      This vote may have already ended.<br> <a href="/">
+//      <<< BACK</a>`, 404);
+// });
