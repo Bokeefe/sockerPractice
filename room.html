@@ -165,16 +165,14 @@
         let total = data.yea+data.nay+data.abs;
 
         if(confirm(`Someone has called this vote to an end. Final count:
-        Yea: ${data.yea}, Nay: ${data.nay}, Abstain ${data.nay}, TOTAL ${total}
-        `)){
-            window.location = '/';
-        }
-       
-        
+            Yea: ${data.yea} ${data.yea/total}%
+            Nay: ${data.nay} ${data.nay/total}%
+            Abstain: ${data.abs} ${data.abs/total}%
+            TOTAL ${total} 100%
+            `)){
+                window.location = '/';
+                }
     });
-
-
-
 </script>
 </body>
 </html>

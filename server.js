@@ -1,8 +1,11 @@
 /* jshint esversion:6 */
-var app = require('express')();
+"use strict";
 var http = require('http').Server(app);
+
+var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+
 var bodyParser = require('body-parser');
 const path = require('path');
 const fs = require("fs");
@@ -10,10 +13,12 @@ const fs = require("fs");
 const voted = new Set;
 var nsp = io.of('/');
 
+console.log(" server running on 3000");
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-server.listen(85);
+server.listen(3000,'showofhands.club');
 
 let votes = [];
 let db = [];
@@ -26,6 +31,11 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+io.on('connection', function (socket) {
+    const oldVotes = require('./dbArray.json');
+    socket.emit('getCurrentVotes', { votes });
+  });
+
 app.post('/newVote', (req, res) => {
     var voteName = JSON.parse(req.body.voteName);
     if(votes.indexOf(voteName) !== -1 ){
@@ -33,6 +43,7 @@ app.post('/newVote', (req, res) => {
     } else {
         votes.push(voteName);
         res.send(voteName);
+        socket.emit('getCurrentVotes', { votes });
     }
 });
 
