@@ -79,13 +79,6 @@
         <button class="btn" id="absBtn" >Abstain</button>
         <button class="btn" id="saveBtn" >Save</button>
     </div>
-
-
-
-
-
-
-
 <script>
 /* jslint esversion:6 */
 
@@ -139,10 +132,9 @@
     });
 
     $('#saveBtn').click(()=>{
-        
             if(!notVoted){
-                if (confirm("End this vote and save?")){
-                    socket.emit('save', voteName);
+                if (confirm("End this vote and save?")){             
+                    socket.emit('saveVote', voteName);
                 }
             } else {
                 alert("Your vote has not been cast yet");
@@ -162,6 +154,7 @@
     });
 
     socket.on('endVote', (data) => {
+
         let total = data.yea+data.nay+data.abs;
 
         if(confirm(`Someone has called this vote to an end. Final count:
