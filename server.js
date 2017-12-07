@@ -13,7 +13,7 @@ const fs = require("fs");
 const voted = new Set;
 var nsp = io.of('/');
 
-console.log(" server running on 3000");
+console.log(" server running on 80");
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -31,11 +31,6 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function (socket) {
-    const oldVotes = require('./dbArray.json');
-    socket.emit('getCurrentVotes', { votes });
-  });
-
 app.post('/newVote', (req, res) => {
     var voteName = JSON.parse(req.body.voteName);
     if(votes.indexOf(voteName) !== -1 ){
@@ -43,7 +38,6 @@ app.post('/newVote', (req, res) => {
     } else {
         votes.push(voteName);
         res.send(voteName);
-        socket.emit('getCurrentVotes', { votes });
     }
 });
 
@@ -94,7 +88,7 @@ app.post('/votePick', (req, res) => {
             io.emit('update',db[voteName]);   
         });
 
-        socket.on('save', (voteName)=>{
+        socket.on('saveVote', (voteName)=>{
             save(db,voteName);
             saveArray(db,voteName);
             io.emit('endVote',db[voteName]);
@@ -102,41 +96,23 @@ app.post('/votePick', (req, res) => {
 
 
         socket.on('disconnect', ()=>{
-            db[voteName].cnctCount--;
-            db[voteName].cnctCount===0 ? save(db,voteName) : console.log( db[voteName].cnctCount );
+            // db[voteName].cnctCount--;
+            // db[voteName].cnctCount===0 ? save(db,voteName) : console.log( db[voteName].cnctCount );
         });
     });
 });
 
-function save(entireDB,name){
-    let db = require( "./db.json");
-    db[name] = entireDB[name];
-    db = JSON.stringify(db);   
-   fs.writeFileSync('./db.json', db);
-
+function save(db, voteName){
+    let bigDB = require('./db.json');
+    bigDB[voteName] = db[voteName];
+    bigDB = JSON.stringify(bigDB);   
+    fs.writeFileSync('./db.json', bigDB);
 }
 
 function saveArray (entireDB,name) {
    entireDB[name].voteName = name;
    let dbArray = require('./dbArray.json');
    dbArray.push(entireDB[name]);
-   x = JSON.stringify(dbArray);   
+   let x = JSON.stringify(dbArray);   
    fs.writeFileSync('./dbArray.json', x);
 }
-
-// app.get('*', function(req, res){
-//     console.log(db[voteName]);
-    
-//     // res.send(`
-//     // <style>
-//     // body{
-//     //     text-align:center;
-//     // }
-//     // h1,p,a {
-//     //     font-size:36px;
-//     // }
-//     // </style>
-//     // <h1>404</h1>
-//     //  This vote may have already ended.<br> <a href="/">
-//     //  <<< BACK</a>`, 404);
-// });

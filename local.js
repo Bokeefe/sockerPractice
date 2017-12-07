@@ -94,6 +94,14 @@ app.post('/votePick', (req, res) => {
             io.emit('endVote',db[voteName]);
         });
 
+        socket.on('cancelVote', (voteName)=>{
+            console.log(db);
+            delete db[voteName];
+            console.log(db);
+            
+            io.emit('cancelVote');
+        });
+
 
         socket.on('disconnect', ()=>{
             // db[voteName].cnctCount--;

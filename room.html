@@ -24,6 +24,12 @@
             margin: 2% 0 2% 0;
             font-size:2em;
         }
+        .btn-half{
+            width:50%;
+            margin: 2% 0 0 0;
+            font-size:2em;
+
+        }
    
         #yeaBtn{
             background-color:lightsteelblue;
@@ -41,7 +47,12 @@
             height:20%;
         }
         #saveBtn{
-            background-color:black;
+            background-color:rgb(0, 0, 0);
+            color:#fff;
+            height:20%;
+        }
+        #cancelBtn{
+            background-color:#1b1b1b;
             color:#fff;
             height:20%;
         }
@@ -77,7 +88,8 @@
         <button class="btn" id="yeaBtn" >Yea</button>
         <button class="btn" id="nayBtn" >Nay</button>
         <button class="btn" id="absBtn" >Abstain</button>
-        <button class="btn" id="saveBtn" >Save</button>
+        <button class="btn btn-half pull-left" id="cancelBtn" > < Cancel X</button>
+        <button class="btn btn-half pull-right" id="saveBtn" >Save >></button>
     </div>
 <script>
 /* jslint esversion:6 */
@@ -140,6 +152,10 @@
                 alert("Your vote has not been cast yet");
             }
     });
+    $('#cancelBtn').click(()=>{
+            console.log('cancel');
+            socket.emit('cancelVote', voteName);
+    });
 
     socket.on('update', (data) => {
         let total = data.yea+data.nay+data.abs;
@@ -163,6 +179,15 @@
             Abstain: ${data.abs} ${data.abs/total}%
             TOTAL ${total} 100%
             `)){
+                window.location = '/';
+                }
+    });
+
+    socket.on('cancelVote', () => {
+
+
+
+        if(confirm(`Someone has canceled this vote before saving it.`)){
                 window.location = '/';
                 }
     });
