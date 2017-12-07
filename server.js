@@ -94,13 +94,11 @@ app.post('/votePick', (req, res) => {
             save(db,voteName);
             saveArray(db,voteName);
             io.emit('endVote',db[voteName]);
+            delete db[voteName];
         });
 
         socket.on('cancelVote', (voteName)=>{
-            console.log(db);
             delete db[voteName];
-            console.log(db);
-            
             io.emit('cancelVote');
         });
 
