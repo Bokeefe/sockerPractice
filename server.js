@@ -18,8 +18,8 @@ console.log(" server running on 80");
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-server.listen(3000,'showofhands.club');
-//server.listen(80,'localhost'); //local
+//server.listen(3000,'showofhands.club');
+server.listen(80,'localhost'); //local
 
 
 let votes = [];
